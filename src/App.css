@@ -1,0 +1,78 @@
+/* Existing styles in your App.css */
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Styles for the table */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+th, td {
+  padding: 12px 15px; /* Add padding for spacing */
+  text-align: left;
+  border: 1px solid #ddd; /* Add borders for clarity */
+}
+
+th {
+  background-color: #f4f4f4; /* Light background for headers */
+  font-weight: bold; /* Make header text bold */
+}
+
+tr:nth-child(even) {
+  background-color: #f9f9f9; /* Add alternate row background color for better readability */
+}
+
+tr:hover {
+  background-color: #eaeaea; /* Highlight row on hover */
+}
+
+td a {
+  color: #1e90ff; /* Make links blue */
+  text-decoration: none; /* Remove underline */
+}
+
+td a:hover {
+  text-decoration: underline; /* Add underline on hover for links */
+}
+
+table, th, td {
+  border: 1px solid #ddd;
+}
