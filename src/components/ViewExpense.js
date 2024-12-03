@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const ViewExpense = () => {
   const [choice, setChoice] = useState("");
@@ -10,6 +11,7 @@ const ViewExpense = () => {
   const [expenseId, setExpenseId] = useState("");
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleChoiceChange = (e) => {
     setChoice(e.target.value);
@@ -40,12 +42,40 @@ const ViewExpense = () => {
           params: data
         }
       );
-
+      console.log(response.data);
       setResult(response.data); // Show the result from the API response
     } catch (error) {
       setResult({ error: "An error occurred while fetching data." });
     } finally {
       setLoading(false);
+    }
+  };
+  const handleUpdate = (expense) => {
+    navigate("/update-expense",{ state: { expense } });
+  };
+  const handleBackHome = () => {
+    navigate("/");
+  };
+  const handleDelete = async(expenseId) => {
+    try {
+      // Send the DELETE request to the server
+      setLoading(true);
+      const response = await axios.post(
+        "https://expensemanagementccb8.azurewebsites.net/api/deleteexpense?code=2mDTVUZ0dzvAaY7iasJXLLThKFiN4Ma02m_L6lODOSjdAzFuxz8qJA==",
+        JSON.stringify({ Expense_ID: expenseId }),  // Ensure the payload is in JSON format
+        {
+          headers: {
+            "Content-Type": "application/json",  // Correct header to indicate JSON body
+          },
+        }
+      );
+      setResult(response.data.message || "Expense deleted successfully!");  // Show success message
+    } catch (error) {
+      // Handle error if the API call fails
+      setResult("Error: " + (error.response?.data?.error || "Unknown error"));
+      console.error("Delete request failed:", error); // Log error for debugging
+    } finally {
+      setLoading(false);  // Stop loading state after the request
     }
   };
 
@@ -62,21 +92,24 @@ const ViewExpense = () => {
           <thead>
             <tr>
               <th>Expense ID</th>
-              <th>User ID</th>
               <th>Amount</th>
               <th>Date</th>
               <th>Description</th>
               <th>Receipt Link</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
             <tr>
               <td>{data.Expense_ID}</td>
-              <td>{data.User_ID}</td> {/* Display User ID */}
               <td>{data.Amount}</td>
               <td>{data.Date}</td>
               <td>{data.Description}</td>
               <td><a href={data.Receipt_URL} target="_blank" rel="noopener noreferrer">View Receipt</a></td> {/* Display Receipt URL */}
+              <td>
+                <button onClick={() => handleUpdate(data)}>Update</button>
+                <button onClick={() => handleDelete(data.Expense_ID)}>Delete</button>
+              </td>
             </tr>
           </tbody>
         </table>
@@ -96,6 +129,7 @@ const ViewExpense = () => {
               <th>Date</th>
               <th>Description</th>
               <th>Receipt Link</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -108,6 +142,10 @@ const ViewExpense = () => {
                 <td>{expense.Date}</td>
                 <td>{expense.Description}</td>
                 <td><a href={expense.Receipt_URL} target="_blank" rel="noopener noreferrer">View Receipt</a></td> {/* Display Receipt URL */}
+                <td>
+                  <button onClick={() => handleUpdate(expense)}>Update</button>
+                  <button onClick={() => handleDelete(expense.Expense_ID)}>Delete</button>
+                </td>
               </tr>
             ))}
           </tbody>
@@ -216,8 +254,10 @@ const ViewExpense = () => {
 
       {/* Display results in table format */}
       <div>{renderTable(result)}</div>
+      <button onClick={handleBackHome}>Back to Home</button>
     </div>
   );
 };
 
 export default ViewExpense;
+
