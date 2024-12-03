@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const AddExpense = () => {
   const [formData, setFormData] = useState({
@@ -12,6 +13,7 @@ const AddExpense = () => {
     file: null,
   });
   const [message, setMessage] = useState("");
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -50,9 +52,17 @@ const AddExpense = () => {
         }
       );
       setMessage(response.data.message);
+
+      setTimeout(() => {
+        navigate("/");
+      },1000);
+
     } catch (error) {
       setMessage("Error: " + error.response?.data?.error || "Unknown error");
     }
+  };
+  const handleBackHome = () => {
+    navigate("/");
   };
 
   return (
@@ -69,6 +79,7 @@ const AddExpense = () => {
         <button type="submit">Add Expense</button>
       </form>
       {message && <p>{message}</p>}
+      <button onClick={handleBackHome}>Back to Home</button>
     </div>
   );
 };
